@@ -32,7 +32,6 @@ jobs:
   uses: android-actions/setup-android@v4
   with:
     packages: ''
-
       - name: Installer Gradle
         uses: gradle/actions/setup-gradle@v4
 
