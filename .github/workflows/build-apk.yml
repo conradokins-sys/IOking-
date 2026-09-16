@@ -1,7 +1,9 @@
-name: Build IOKing APK
+name: Build IOKing V6 APK
 
 on:
   workflow_dispatch:
+  push:
+    branches: ["main"]
 
 jobs:
   build:
@@ -11,27 +13,32 @@ jobs:
       - name: Télécharger le dépôt
         uses: actions/checkout@v4
 
-      - name: Décompresser IOKing
+      - name: Décompresser IOKing V6
         run: |
-          mkdir ioking
-          unzip -o IOKING_ANDROID_READY.zip -d ioking
+          rm -rf app build.gradle settings.gradle
+          mkdir v6
+          unzip -o IOKING_V6_ANDROID_POINTS.zip -d v6
+          cp -r v6/app .
+          cp v6/build.gradle .
+          cp v6/settings.gradle .
 
       - name: Installer Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
-      - name: Configurer Gradle
+      - name: Installer Android
+        uses: android-actions/setup-android@v3
+
+      - name: Installer Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Construire APK
-        run: |
-          cd ioking
-          gradle assembleDebug
+      - name: Compiler IOKing V6
+        run: gradle assembleDebug
 
-      - name: Récupérer APK
+      - name: Publier APK V6
         uses: actions/upload-artifact@v4
         with:
-          name: IOKing-V3-APK
-          path: ioking/app/build/outputs/apk/debug/app-debug.apk
+          name: IOKing-V6-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
